@@ -1,0 +1,126 @@
+spring:
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
+  profiles:
+    active: prod
+
+webmethod:
+  get:  GET
+  post: POST
+
+datamanage:
+  host: http://127.0.0.1:8081/datamanage
+  ext: .dm
+  map:
+  -
+    path: /account/signin
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /company/list
+    method: ${webmethod.get}
+    parameters: false
+  -
+    path: /company/create
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /company/modify
+    method: ${webmethod.post}    
+    parameters: true
+  -
+    path: /enterprise/list
+    method: ${webmethod.get}
+    parameters: false
+  -
+    path: /enterprise/status
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /enterprise/create
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /enterprise/modify
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /customer/list
+    method: ${webmethod.get}
+    parameters: false
+  -
+    path: /customer/create
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /customer/modify
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /enduser/list
+    method: ${webmethod.get}
+    parameters: false
+  -
+    path: /enduser/create
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /enduser/modify
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /employee/create
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /employee/modify
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /employee/search
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /device/create
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /device/modify
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /device/search
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /dem/create
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /dem/delete
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /dem/get/device
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /dem/get/employee
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /manufacturer/list
+    method: ${webmethod.get}
+    parameters: false
+  -
+    path: /manufacturer/create
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /manufacturer/modify
+    method: ${webmethod.post}
+    parameters: true
+
+
