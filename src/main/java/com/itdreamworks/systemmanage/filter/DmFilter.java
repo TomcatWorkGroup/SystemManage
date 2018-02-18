@@ -11,8 +11,12 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-@WebFilter(filterName = "requestFilter", urlPatterns = "*.dm")
-public class RequestFilter implements Filter {
+/**
+ * 存在URL泄露后，非法调用的问题
+ * 可参考ApiFilter Token验证的处理方式
+ */
+@WebFilter(filterName = "dmFilter", urlPatterns = "*.dm")
+public class DmFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
