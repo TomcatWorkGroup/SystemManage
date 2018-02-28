@@ -2,7 +2,7 @@ package com.itdreamworks.systemmanage.filter;
 
 import com.itdreamworks.systemmanage.client.TemplateClient;
 import com.itdreamworks.systemmanage.config.FeignSetting;
-import com.itdreamworks.systemmanage.config.RequestMapConfig;
+import com.itdreamworks.systemmanage.config.DmRequestMapConfig;
 import com.itdreamworks.systemmanage.utils.WebRequestUtil;
 import feign.Feign;
 
@@ -31,9 +31,9 @@ public class DmFilter implements Filter {
 //        System.out.println(request.getServletPath());//resources/request.jsp
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        if (RequestMapConfig.getDataManageRequestMap().containsKey(request.getServletPath())) {
+        if (DmRequestMapConfig.getDmRequestMap().containsKey(request.getServletPath())) {
             servletResponse.setContentType("application/json; charset=utf-8");
-            FeignSetting setting = RequestMapConfig.getDataManageRequestMap().get(request.getServletPath());
+            FeignSetting setting = DmRequestMapConfig.getDmRequestMap().get(request.getServletPath());
             TemplateClient client =//.encoder(new JacksonEncoder())
                     Feign.builder().target(TemplateClient.class, setting.getUrl());
 

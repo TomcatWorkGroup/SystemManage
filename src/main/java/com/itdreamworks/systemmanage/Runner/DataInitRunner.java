@@ -1,7 +1,7 @@
 package com.itdreamworks.systemmanage.Runner;
 
 import com.itdreamworks.systemmanage.config.DataManageMap;
-import com.itdreamworks.systemmanage.config.RequestMapConfig;
+import com.itdreamworks.systemmanage.config.DmRequestMapConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -13,6 +13,6 @@ public class DataInitRunner implements ApplicationRunner {
     DataManageMap map;
     @Override
     public void run(ApplicationArguments applicationArguments) throws Exception {
-        RequestMapConfig.setDataManageRequestMap(map);
+        DmRequestMapConfig.setDmRequestMap(map);
     }
 }

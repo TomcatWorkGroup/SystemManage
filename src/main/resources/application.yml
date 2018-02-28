@@ -10,6 +10,14 @@ webmethod:
   get:  GET
   post: POST
 
+customerdatamanage:
+  host: http://127.0.0.1:8081/customerdatamanage
+  ext: .api
+  map:
+  -
+    path: /account/signin
+    method: ${webmethod.post}
+    parameters: true
 datamanage:
   host: http://127.0.0.1:8081/datamanage
   ext: .dm

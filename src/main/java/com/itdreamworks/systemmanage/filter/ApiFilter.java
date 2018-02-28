@@ -1,11 +1,5 @@
 package com.itdreamworks.systemmanage.filter;
 
-import com.itdreamworks.systemmanage.client.TemplateClient;
-import com.itdreamworks.systemmanage.config.FeignSetting;
-import com.itdreamworks.systemmanage.config.RequestMapConfig;
-import com.itdreamworks.systemmanage.utils.WebRequestUtil;
-import feign.Feign;
-
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +8,7 @@ import java.io.IOException;
 @WebFilter(filterName = "apiFilter", urlPatterns = "*.api")
 public class ApiFilter implements Filter {
     public static final String USER_TOKEN_NAME = "usr_token";
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -26,9 +21,10 @@ public class ApiFilter implements Filter {
         servletResponse.setContentType("application/json; charset=utf-8");
         String content ="";
         if(USER_TOKEN_NAME.equals(token)){
-            content = "{\"code\":1,\"msg\":\"ok\"}";
+            content = "{\"code\":200,\"msg\":\"ok\"}";
+            //转发请求
         }else{
-            content = "{\"code\":0,\"msg\":\"error\"}";
+            content = "{\"code\":401,\"msg\":\"无法识别API调用者，请进行身份认证！\"}";
         }
         servletResponse.getWriter().write(content);
     }
