@@ -5,10 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
-@EnableFeignClients
+@EnableCaching
 @ServletComponentScan
 public class SystemmanageApplication extends SpringBootServletInitializer {
 

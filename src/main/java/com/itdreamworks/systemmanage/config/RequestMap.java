@@ -8,16 +8,6 @@ public class RequestMap {
     public static final String METHOD_POST="POST";
     private String host,ext;
 
-    public List<MapEntity> getMap() {
-        return entities;
-    }
-
-    public void setMap(List<MapEntity> entities) {
-        this.entities = entities;
-    }
-
-    private List<MapEntity> entities = new ArrayList<>();
-
     public String getHost() {
         return host;
     }

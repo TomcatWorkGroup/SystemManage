@@ -1,23 +1,31 @@
+
 spring:
   mvc:
     view:
       prefix: /
       suffix: .html
   profiles:
-    active: prod
+    active: dev
+  cache:
+    type: ehcache
+    ehcache:
+      config: ehcache.xml
 
 webmethod:
   get:  GET
   post: POST
 
 customerdatamanage:
-  host: http://127.0.0.1:8081/customerdatamanage
+  enter: /account/signin.api
+  host: http://127.0.0.1:8088
   ext: .api
   map:
   -
     path: /account/signin
+    remote: /employee/find
     method: ${webmethod.post}
     parameters: true
+
 datamanage:
   host: http://127.0.0.1:8081/datamanage
   ext: .dm
@@ -130,5 +138,7 @@ datamanage:
     path: /manufacturer/modify
     method: ${webmethod.post}
     parameters: true
+logging:
+  path: /logs
 
 

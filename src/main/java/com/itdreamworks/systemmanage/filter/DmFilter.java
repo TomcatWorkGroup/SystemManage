@@ -31,9 +31,9 @@ public class DmFilter implements Filter {
 //        System.out.println(request.getServletPath());//resources/request.jsp
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        if (DmRequestMapConfig.getDmRequestMap().containsKey(request.getServletPath())) {
+        if (DmRequestMapConfig.getRequestRouteMap().containsKey(request.getServletPath())) {
             servletResponse.setContentType("application/json; charset=utf-8");
-            FeignSetting setting = DmRequestMapConfig.getDmRequestMap().get(request.getServletPath());
+            FeignSetting setting = DmRequestMapConfig.getRequestRouteMap().get(request.getServletPath());
             TemplateClient client =//.encoder(new JacksonEncoder())
                     Feign.builder().target(TemplateClient.class, setting.getUrl());
 

@@ -8,7 +8,7 @@ public class FeignSetting{
         FeignSetting setting = new FeignSetting();
         setting.hasParameters = entity.hasParameters();
         setting.localPath = String.format("%s%s",entity.getPath(),ext);
-        setting.url= String.format("%s%s",host,entity.getPath());
+        setting.url= String.format("%s%s",host,entity.getRemote());
         setting.method = entity.getMethod();
         return setting;
     }

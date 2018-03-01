@@ -1,11 +1,7 @@
 package com.itdreamworks.systemmanage.config;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-
-@ConfigurationProperties(prefix = "datamanage.map")
 public class MapEntity {
-    private String path,method;
+    private String path,remote,method;
     private boolean parameters;
 
     public String getPath() {
@@ -14,6 +10,15 @@ public class MapEntity {
 
     public void setPath(String path) {
         this.path = path;
+        this.remote = path;
+    }
+
+    public String getRemote() {
+        return remote;
+    }
+
+    public void setRemote(String remote) {
+        this.remote = remote;
     }
 
     public String getMethod() {
@@ -35,4 +40,5 @@ public class MapEntity {
     public void setParameters(boolean parameters) {
         this.parameters = parameters;
     }
+
 }
