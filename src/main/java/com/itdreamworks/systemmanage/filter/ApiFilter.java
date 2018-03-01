@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itdreamworks.systemmanage.client.TemplateClient;
 import com.itdreamworks.systemmanage.config.ApiRequestMapConfig;
 import com.itdreamworks.systemmanage.config.FeignSetting;
+import com.itdreamworks.systemmanage.entity.MyHttpServletRequestWrapper;
 import com.itdreamworks.systemmanage.entity.Token;
 import com.itdreamworks.systemmanage.utils.CacheUtil;
 import com.itdreamworks.systemmanage.utils.WebRequestUtil;
@@ -17,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 @WebFilter(filterName = "apiFilter", urlPatterns = "*.api")
 public class ApiFilter implements Filter {
@@ -43,10 +45,15 @@ public class ApiFilter implements Filter {
         servletResponse.setContentType("application/json; charset=utf-8");
 
         if (null != tokenKey) {
-            if (null != cacheUtil.getToken(CacheUtil.TOKEN_API, tokenKey)) {
+            String orgId = cacheUtil.getToken(CacheUtil.TOKEN_API, tokenKey);
+            if (null != orgId) {
                 if (ApiRequestMapConfig.getRequestRouteMap().containsKey(request.getServletPath())) {
+                    //重新包装WebRequest
+                    MyHttpServletRequestWrapper requestWrapper = new MyHttpServletRequestWrapper(request);
+                    //添加orgId参数及值
+                    requestWrapper.put("orgId",new String[]{orgId});
                     servletResponse.getWriter().write(
-                            handlerRequest(request));
+                            handleRequest(requestWrapper));
                 } else {
                     out404Msg(servletResponse);
                 }
@@ -55,13 +62,14 @@ public class ApiFilter implements Filter {
             }
         } else {
             if (enterUrl.equals(request.getServletPath())) {
-                String str = handlerRequest(request);
+                String str = handleRequest(request);
                 if(str.isEmpty()){
                     out204Msg(servletResponse);
                 }else{
                     LinkedHashMap jsonObj = (LinkedHashMap) mapper.readValue(str, Object.class);
                     Token token = Token.getInstance(jsonObj.get("orgId").toString());
                     cacheUtil.putToken(CacheUtil.TOKEN_API,token);
+                    servletResponse.setContentType("text/plain; charset=utf-8");
                     servletResponse.getWriter().write(token.getTokenString());
                 }
             } else {
@@ -75,7 +83,7 @@ public class ApiFilter implements Filter {
 
     }
 
-    private String handlerRequest(HttpServletRequest request) throws IOException {
+    private String handleRequest(HttpServletRequest request) {
         String content = "";
         FeignSetting setting = ApiRequestMapConfig.getRequestRouteMap().get(request.getServletPath());
         TemplateClient client =
@@ -95,6 +103,23 @@ public class ApiFilter implements Filter {
             }
         }
         return content;
+    }
+
+    /**
+     * 在处理完WebRequest参数后，为Map增加Key-Value对
+     * 该处理方式避免了对WebRequest的重新包装，但增加了重复性判断
+     * @param request
+     * @return
+     */
+    private Map<String,String> handleRequestParameterMap(HttpServletRequest request){
+        Map<String,String> map = WebRequestUtil.getRequestParameterMap(request);
+        String tokenKey = request.getHeader(USER_TOKEN_NAME);
+        if (null == tokenKey) {
+            return map;
+        }
+        String orgId = cacheUtil.getToken(CacheUtil.TOKEN_API, tokenKey);
+        map.put("orgId",orgId);
+        return map;
     }
 
     private void out204Msg(ServletResponse response) throws IOException {

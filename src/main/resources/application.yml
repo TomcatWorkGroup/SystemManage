@@ -17,7 +17,7 @@ webmethod:
 
 customerdatamanage:
   enter: /account/signin.api
-  host: http://127.0.0.1:8088
+  host: http://127.0.0.1:8888
   ext: .api
   map:
   -
@@ -25,7 +25,10 @@ customerdatamanage:
     remote: /employee/find
     method: ${webmethod.post}
     parameters: true
-
+  -
+    path: /category/add
+    method: ${webmethod.post}
+    parameters: true
 datamanage:
   host: http://127.0.0.1:8081/datamanage
   ext: .dm
