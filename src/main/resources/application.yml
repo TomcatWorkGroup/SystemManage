@@ -17,7 +17,7 @@ webmethod:
 
 customerdatamanage:
   enter: /account/signin.api
-  host: http://127.0.0.1:8888
+  host: http://127.0.0.1:8088
   ext: .api
   map:
   -
@@ -26,9 +26,74 @@ customerdatamanage:
     method: ${webmethod.post}
     parameters: true
   -
+    path: /employee/add
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /employee/modify
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /employee/remove
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /employee/changeStatus
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /employee/addDeviceMap
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /employee/removeDeviceMap
+    method: ${webmethod.post}
+    parameters: true
+  -
     path: /category/add
     method: ${webmethod.post}
     parameters: true
+  -
+    path: /category/changeCategoryName
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /category/remove
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /category/remove
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /customer/add
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /customer/remove
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /customer/modify
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /product/add
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /product/remove
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /product/modify
+    method: ${webmethod.post}
+    parameters: true
+  -
+    path: /product/sell
+    method: ${webmethod.post}
+    parameters: true
+
 datamanage:
   host: http://127.0.0.1:8081/datamanage
   ext: .dm

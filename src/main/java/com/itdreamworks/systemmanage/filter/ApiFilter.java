@@ -17,6 +17,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -41,8 +42,10 @@ public class ApiFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
         String tokenKey = request.getHeader(USER_TOKEN_NAME);
-        servletResponse.setContentType("application/json; charset=utf-8");
+        Map<String,String[]> mapperx = request.getParameterMap();
+        response.setContentType("application/json; charset=utf-8");
 
         if (null != tokenKey) {
             String orgId = cacheUtil.getToken(CacheUtil.TOKEN_API, tokenKey);
@@ -51,29 +54,33 @@ public class ApiFilter implements Filter {
                     //重新包装WebRequest
                     MyHttpServletRequestWrapper requestWrapper = new MyHttpServletRequestWrapper(request);
                     //添加orgId参数及值
-                    requestWrapper.put("orgId",new String[]{orgId});
-                    servletResponse.getWriter().write(
+                    requestWrapper.put("customerId",new String[]{orgId});
+                    response.getWriter().write(
                             handleRequest(requestWrapper));
                 } else {
-                    out404Msg(servletResponse);
+                    out404Msg(response);
                 }
             } else {
-                out401Msg(servletResponse);
+                out401Msg(response);
             }
         } else {
             if (enterUrl.equals(request.getServletPath())) {
                 String str = handleRequest(request);
                 if(str.isEmpty()){
-                    out204Msg(servletResponse);
+                    out204Msg(response);
                 }else{
                     LinkedHashMap jsonObj = (LinkedHashMap) mapper.readValue(str, Object.class);
-                    Token token = Token.getInstance(jsonObj.get("orgId").toString());
-                    cacheUtil.putToken(CacheUtil.TOKEN_API,token);
-                    servletResponse.setContentType("text/plain; charset=utf-8");
-                    servletResponse.getWriter().write(token.getTokenString());
+                    if(!checkPassword(request.getParameter("password"),jsonObj.get("password"))){
+                        out204Msg(response);
+                    }else{
+                        Token token = Token.getInstance(jsonObj.get("orgId").toString());
+                        cacheUtil.putToken(CacheUtil.TOKEN_API,token);
+                        servletResponse.setContentType("text/plain; charset=utf-8");
+                        response.getWriter().write(token.getTokenString());
+                    }
                 }
             } else {
-                out401Msg(servletResponse);
+                out401Msg(response);
             }
         }
     }
@@ -105,6 +112,12 @@ public class ApiFilter implements Filter {
         return content;
     }
 
+    private boolean checkPassword(String inputPassword,Object password){
+        if(null == inputPassword || inputPassword.isEmpty())
+            return false;
+        return inputPassword.equals(password);
+    }
+
     /**
      * 在处理完WebRequest参数后，为Map增加Key-Value对
      * 该处理方式避免了对WebRequest的重新包装，但增加了重复性判断
@@ -122,30 +135,25 @@ public class ApiFilter implements Filter {
         return map;
     }
 
-    private void out204Msg(ServletResponse response) throws IOException {
-        HttpServletResponse r = (HttpServletResponse) response;
-        r.setStatus(204);
-        response.getWriter().write("{\"status\":204,\"message\":\"用户名或密码错误！\"}");
+    private void out204Msg(HttpServletResponse response) throws IOException {
+        response.setStatus(204);
+        //return "{\"status\":204,\"message\":\"用户名或密码错误！\"}";
     }
 
-    private void out401Msg(ServletResponse response) throws IOException {
-        HttpServletResponse r = (HttpServletResponse) response;
-        r.setStatus(401);
+    private void out401Msg(HttpServletResponse response) throws IOException {
+        response.setStatus(401);
         response.getWriter().write(String.format(
                 "{\"status\":401,\"message\":\"无法识别API调用者，请进行身份认证！\",\"enterUrl\":\"%s\"}",
                 enterUrl));
     }
 
-    private void out404Msg(ServletResponse response) throws IOException {
-
-        HttpServletResponse r = (HttpServletResponse) response;
-        r.setStatus(401);
+    private void out404Msg(HttpServletResponse response) throws IOException {
+        response.setStatus(401);
         response.getWriter().write("{\"status\":404,\"message\":\"无效API请求！\"}");
     }
 
-    private void out501Msg(ServletResponse response) throws IOException {
-        HttpServletResponse r = (HttpServletResponse) response;
-        r.setStatus(501);
+    private void out501Msg(HttpServletResponse response) throws IOException {
+        response.setStatus(501);
         response.getWriter().write("{\"status\":501,\"message\":\"不支持该API或Web Method！\"}");
     }
 }
