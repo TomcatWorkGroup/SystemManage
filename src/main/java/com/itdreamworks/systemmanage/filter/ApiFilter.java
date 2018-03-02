@@ -6,7 +6,9 @@ import com.itdreamworks.systemmanage.config.ApiRequestMapConfig;
 import com.itdreamworks.systemmanage.config.FeignSetting;
 import com.itdreamworks.systemmanage.entity.MyHttpServletRequestWrapper;
 import com.itdreamworks.systemmanage.entity.Token;
+import com.itdreamworks.systemmanage.entity.enums.ResultStatus;
 import com.itdreamworks.systemmanage.utils.CacheUtil;
+import com.itdreamworks.systemmanage.utils.ResultStatusJsonStringUtil;
 import com.itdreamworks.systemmanage.utils.WebRequestUtil;
 import feign.Feign;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,6 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -39,12 +40,11 @@ public class ApiFilter implements Filter {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException {
 
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String tokenKey = request.getHeader(USER_TOKEN_NAME);
-        Map<String,String[]> mapperx = request.getParameterMap();
         response.setContentType("application/json; charset=utf-8");
 
         if (null != tokenKey) {
@@ -58,20 +58,27 @@ public class ApiFilter implements Filter {
                     response.getWriter().write(
                             handleRequest(requestWrapper));
                 } else {
-                    out404Msg(response);
+                    //out404Msg(response);
+                    response.getWriter().write(ResultStatusJsonStringUtil.getStatusString(ResultStatus.ERROR_API_NULL));
                 }
             } else {
-                out401Msg(response);
+                //out401Msg(response);
+                response.getWriter().write(
+                        ResultStatusJsonStringUtil.getStatusString(
+                                ResultStatus.ERROR_AUTHORIZATION,
+                                String.format("\"enterUrl\":\"%s\"",enterUrl)));
             }
         } else {
             if (enterUrl.equals(request.getServletPath())) {
                 String str = handleRequest(request);
                 if(str.isEmpty()){
-                    out204Msg(response);
+                    //out204Msg(response);
+                    response.getWriter().write(ResultStatusJsonStringUtil.getStatusString(ResultStatus.ERROR_PASSPORT));
                 }else{
                     LinkedHashMap jsonObj = (LinkedHashMap) mapper.readValue(str, Object.class);
                     if(!checkPassword(request.getParameter("password"),jsonObj.get("password"))){
-                        out204Msg(response);
+                        //out204Msg(response);
+                        response.getWriter().write(ResultStatusJsonStringUtil.getStatusString(ResultStatus.ERROR_PASSPORT));
                     }else{
                         Token token = Token.getInstance(jsonObj.get("orgId").toString());
                         cacheUtil.putToken(CacheUtil.TOKEN_API,token);
@@ -80,7 +87,11 @@ public class ApiFilter implements Filter {
                     }
                 }
             } else {
-                out401Msg(response);
+                //out401Msg(response);
+                response.getWriter().write(
+                        ResultStatusJsonStringUtil.getStatusString(
+                                ResultStatus.ERROR_AUTHORIZATION,
+                                String.format("\"enterUrl\":\"%s\"",enterUrl)));
             }
         }
     }
@@ -136,24 +147,18 @@ public class ApiFilter implements Filter {
     }
 
     private void out204Msg(HttpServletResponse response) throws IOException {
-        response.setStatus(204);
-        //return "{\"status\":204,\"message\":\"用户名或密码错误！\"}";
+        response.getWriter().write(ResultStatusJsonStringUtil.getStatusString(ResultStatus.ERROR_PASSPORT));
     }
 
     private void out401Msg(HttpServletResponse response) throws IOException {
-        response.setStatus(401);
-        response.getWriter().write(String.format(
-                "{\"status\":401,\"message\":\"无法识别API调用者，请进行身份认证！\",\"enterUrl\":\"%s\"}",
-                enterUrl));
+        response.getWriter().write(
+                ResultStatusJsonStringUtil.getStatusString(
+                        ResultStatus.ERROR_AUTHORIZATION,
+                        String.format("\"enterUrl\":\"%s\"",enterUrl)));
     }
 
     private void out404Msg(HttpServletResponse response) throws IOException {
-        response.setStatus(401);
-        response.getWriter().write("{\"status\":404,\"message\":\"无效API请求！\"}");
-    }
-
-    private void out501Msg(HttpServletResponse response) throws IOException {
-        response.setStatus(501);
-        response.getWriter().write("{\"status\":501,\"message\":\"不支持该API或Web Method！\"}");
+        //response.setStatus(401);
+        response.getWriter().write(ResultStatusJsonStringUtil.getStatusString(ResultStatus.ERROR_API_NULL));
     }
 }
