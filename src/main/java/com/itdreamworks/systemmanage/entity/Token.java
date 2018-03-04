@@ -1,8 +1,9 @@
 package com.itdreamworks.systemmanage.entity;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class Token {
+public class Token implements Serializable{
     public String getTokenString() {
         return tokenString;
     }

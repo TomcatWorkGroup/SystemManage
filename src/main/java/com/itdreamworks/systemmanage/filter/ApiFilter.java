@@ -22,12 +22,11 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@WebFilter(filterName = "apiFilter", urlPatterns = "*.api")
 public class ApiFilter implements Filter {
     public static final String USER_TOKEN_NAME = "usr_token";
 
     @Value("${customerdatamanage.enter}")
-    private String enterUrl;
+    private String enterUrl ;//="/account/signin.api";
 
     @Autowired
     private ObjectMapper mapper;
@@ -37,6 +36,8 @@ public class ApiFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
+//        cacheUtil = new CacheUtil();
+//        mapper = new ObjectMapper();
     }
 
     @Override

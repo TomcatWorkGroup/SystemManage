@@ -3,7 +3,7 @@ package com.itdreamworks.systemmanage.utils;
 import com.itdreamworks.systemmanage.entity.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
-import org.springframework.cache.CacheManager;
+import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,7 +12,7 @@ public class CacheUtil {
     public static final String TOKEN_SYSTEM="token_system";
 
     @Autowired
-    private CacheManager cacheManager;
+    private EhCacheCacheManager cacheManager;
 
 
     private Cache getCache(String cacheName){

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ehcache>
     <!-- 指定一个文件目录，当EHCache把数据写到硬盘上时，将把数据写到这个文件目录下 -->
-    <diskStore path="java.io.tmpdir/Tmp_EhCache"/>
+    <diskStore path="java.io.tmpdir"/>
     <!-- 设定缓存容器名称、容量 -->
     <cache name="token_system"
            maxElementsInMemory="10000"

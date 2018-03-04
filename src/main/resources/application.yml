@@ -4,8 +4,6 @@ spring:
     view:
       prefix: /
       suffix: .html
-  profiles:
-    active: dev
   cache:
     type: ehcache
     ehcache:
@@ -17,7 +15,7 @@ webmethod:
 
 customerdatamanage:
   enter: /account/signin.api
-  host: http://127.0.0.1:8888
+  host: http://39.106.168.77:8084/customerdatamanage
   ext: .api
   map:
   -
@@ -208,5 +206,6 @@ datamanage:
     parameters: true
 logging:
   path: /logs
+debug: true
 
 
